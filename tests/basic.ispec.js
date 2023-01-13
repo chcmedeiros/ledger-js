@@ -46,7 +46,7 @@ test("getAddressAndPubKey", async () => {
 
   // Derivation path. First 3 items are automatically hardened!
   const path = [44, 474, 5, 0, 3];
-  const resp = await app.getAddressAndPubKey(path);
+  const resp = await app.getAddressAndPubKey_ed25519(path);
 
   console.log(resp);
 
@@ -68,7 +68,7 @@ test("showAddressAndPubKey", async () => {
 
   // Derivation path. First 3 items are automatically hardened!
   const path = [44, 474, 5, 0, 3];
-  const resp = await app.showAddressAndPubKey(path);
+  const resp = await app.showAddressAndPubKey_ed25519(path);
 
   console.log(resp);
 
