@@ -20,7 +20,7 @@ export function serializePathv1(path) {
 }
 
 /** @param {import('./types').App} app */
-export async function signSendChunkv1(app, chunkIdx, chunkNum, chunk) {
+export async function signSendChunkv1(app, chunkIdx, chunkNum, chunk, ins) {
   let payloadType = PAYLOAD_TYPE.ADD;
   if (chunkIdx === 1) {
     payloadType = PAYLOAD_TYPE.INIT;
