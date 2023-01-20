@@ -34,7 +34,8 @@ describe("Integration", function () {
 
     // Derivation path. First 3 items are automatically hardened!
     const path = [44, 474, 0, 0, 0];
-    const resp = await app.publicKey(path);
+    const mask = [1, 1, 1, 1, 1];
+    const resp = await app.publicKey(path, mask);
 
     expect(resp.return_code).toEqual(0x9000);
     expect(resp.error_message).toEqual("No errors");
@@ -50,7 +51,8 @@ describe("Integration", function () {
 
     // Derivation path. First 3 items are automatically hardened!
     const path = [44, 474, 5, 0, 3];
-    const resp = await app.getAddressAndPubKey_ed25519(path);
+    const mask = [1, 1, 1, 1, 1];
+    const resp = await app.getAddressAndPubKey_ed25519(path, mask);
 
     console.log(resp);
 
@@ -69,7 +71,8 @@ describe("Integration", function () {
 
     // Derivation path. First 3 items are automatically hardened!
     const path = [44, 474, 5, 0, 3];
-    const resp = await app.showAddressAndPubKey_ed25519(path);
+    const mask = [1, 1, 1, 1, 1];
+    const resp = await app.showAddressAndPubKey_ed25519(path, mask);
 
     console.log(resp);
 
@@ -88,7 +91,8 @@ describe("Integration", function () {
 
     // Derivation path. First 3 items are automatically hardened!
     const path = [44, 60, 0, 0, 0];
-    const resp = await app.getAddressAndPubKey_secp256k1(path);
+    const mask = [1, 1, 1, 0, 0];
+    const resp = await app.getAddressAndPubKey_secp256k1(path, mask);
 
     console.log(resp);
 
@@ -98,9 +102,9 @@ describe("Integration", function () {
     expect(resp).toHaveProperty("hex_address");
     expect(resp).toHaveProperty("pk");
 
-    expect(resp.hex_address).toEqual("7dac3ca6b185b7778a7027a52c0cc3940d2e1ca0");
+    expect(resp.hex_address).toEqual("95e5e3c1bdd92cd4a0c14c62480db5867946281d");
     expect(resp.pk.toString("hex")).toEqual(
-      "03e1bd70ae900252c8781608387c2d5aa1876f1cdcbfdc2c2206cbf67e64d8d7aa",
+      "021853d93524119eeb31ab0b06f1dcb068f84943bb230dfa10b1292f47af643575",
     );
     expect(resp.pk.length).toEqual(33);
   });
@@ -110,7 +114,8 @@ describe("Integration", function () {
 
     // Derivation path. First 3 items are automatically hardened!
     const path = [44, 60, 0, 0, 0];
-    const resp = await app.showAddressAndPubKey_secp256k1(path);
+    const mask = [1, 1, 1, 0, 0];
+    const resp = await app.showAddressAndPubKey_secp256k1(path, mask);
 
     console.log(resp);
 
@@ -120,9 +125,55 @@ describe("Integration", function () {
     expect(resp).toHaveProperty("hex_address");
     expect(resp).toHaveProperty("pk");
 
-    expect(resp.hex_address).toEqual("7dac3ca6b185b7778a7027a52c0cc3940d2e1ca0");
+    expect(resp.hex_address).toEqual("95e5e3c1bdd92cd4a0c14c62480db5867946281d");
     expect(resp.pk.toString("hex")).toEqual(
-      "03e1bd70ae900252c8781608387c2d5aa1876f1cdcbfdc2c2206cbf67e64d8d7aa",
+      "021853d93524119eeb31ab0b06f1dcb068f84943bb230dfa10b1292f47af643575",
+    );
+    expect(resp.pk.length).toEqual(33);
+  });
+
+test("getAddressAndPubKey_Secp256k1_second_address", async () => {
+    const app = new OasisApp(transport);
+
+    // Derivation path. First 3 items are automatically hardened!
+    const path = [44, 60, 0, 0, 1];
+    const mask = [1, 1, 1, 0, 0];
+    const resp = await app.getAddressAndPubKey_secp256k1(path, mask);
+
+    console.log(resp);
+
+    expect(resp.return_code).toEqual(0x9000);
+    expect(resp.error_message).toEqual("No errors");
+
+    expect(resp).toHaveProperty("hex_address");
+    expect(resp).toHaveProperty("pk");
+
+    expect(resp.hex_address).toEqual("a4d577fc4c4a3073553bd25a4e9cb3f1cdace549");
+    expect(resp.pk.toString("hex")).toEqual(
+      "022374f2dacd71042b5a888e3839e4ba54752ad6a51d35b54f6abb899c4329d4bf",
+    );
+    expect(resp.pk.length).toEqual(33);
+  });
+
+  test("showAddressAndPubKey_Secp256k1_second_address", async () => {
+    const app = new OasisApp(transport);
+
+    // Derivation path. First 3 items are automatically hardened!
+    const path = [44, 60, 0, 0, 1];
+    const mask = [1, 1, 1, 0, 0];
+    const resp = await app.showAddressAndPubKey_secp256k1(path, mask);
+
+    console.log(resp);
+
+    expect(resp.return_code).toEqual(0x9000);
+    expect(resp.error_message).toEqual("No errors");
+
+    expect(resp).toHaveProperty("hex_address");
+    expect(resp).toHaveProperty("pk");
+
+    expect(resp.hex_address).toEqual("a4d577fc4c4a3073553bd25a4e9cb3f1cdace549");
+    expect(resp.pk.toString("hex")).toEqual(
+      "022374f2dacd71042b5a888e3839e4ba54752ad6a51d35b54f6abb899c4329d4bf",
     );
     expect(resp.pk.length).toEqual(33);
   });
@@ -168,6 +219,7 @@ describe("Integration", function () {
 
     // Derivation path. First 3 items are automatically hardened!
     const path = [44, 474, 0, 0, 0];
+    const mask = [1, 1, 1, 1, 1];
     const context =
       "oasis-core/consensus: tx for chain bc1c715319132305795fa86bd32e93291aaacbfb5b5955f3ba78bdba413af9e1";
     const message = Buffer.from(
@@ -175,8 +227,8 @@ describe("Integration", function () {
       "base64",
     );
 
-    const responsePk = await app.publicKey(path);
-    const responseSign = await app.sign(path, context, message);
+    const responsePk = await app.publicKey(path, mask);
+    const responseSign = await app.sign(path, mask, context, message);
 
     console.log(responsePk);
     console.log(responseSign);
@@ -202,6 +254,7 @@ describe("Integration", function () {
   test("sign_and_verify_pt_ed25519", async () => {
     const app = new OasisApp(transport);
     const path = [44, 474, 0, 0, 0];
+    const mask = [1, 1, 1, 0, 0];
     const meta = Buffer.from(
       "ompydW50aW1lX2lkeEAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDBlMmVhYTk5ZmMwMDhmODdmbWNoYWluX2NvbnRleHR4QGIxMWIzNjllMGRhNWJiMjMwYjIyMDEyN2Y1ZTdiMjQyZDM4NWVmOGM2ZjU0OTA2MjQzZjMwYWY2M2M4MTU1MzU=",
       "base64",
@@ -216,13 +269,13 @@ describe("Integration", function () {
       "oasis-runtime-sdk/tx: v0 for chain 03e5935652dc03c4a97e07ab2383bfbcc806a6760f872c1782a7ea560f4f7738",
     );
 
-    const pkResponse = await app.getAddressAndPubKey_ed25519(path);
+    const pkResponse = await app.getAddressAndPubKey_ed25519(path, mask);
     console.log(pkResponse);
     expect(pkResponse.return_code).toEqual(0x9000);
     expect(pkResponse.error_message).toEqual("No errors");
 
     // do not wait here..
-    const resp = await app.signPtEd25519(path, meta, txBlob);
+    const resp = await app.signPtEd25519(path, mask, meta, txBlob);
 
     console.log(resp);
 
@@ -241,6 +294,7 @@ describe("Integration", function () {
   test("sign_and_verify_pt_secp256k1", async () => {
     const app = new OasisApp(transport);
     const path = [44, 60, 0, 0, 0];
+    const mask = [1, 1, 1, 0, 0];
     const meta = Buffer.from(
       "o2dvcmlnX3RveCg3MDlFRWJkOTc5MzI4QTJCMzYwNUExNjA5MTVERUIyNkUxODZhYkY4anJ1bnRpbWVfaWR4QDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDcyYzgyMTVlNjBkNWJjYTdtY2hhaW5fY29udGV4dHhANTAzMDRmOThkZGI2NTY2MjBlYTgxN2NjMTQ0NmM0MDE3NTJhMDVhMjQ5YjM2YzliOTBkYmE0NjE2ODI5OTc3YQ==",
       "base64",
@@ -255,13 +309,13 @@ describe("Integration", function () {
       "oasis-runtime-sdk/tx: v0 for chain 7f1eb9fa832a02ccda132d330f342dbef92c0817bf73eeea12020552f1d62f86",
     );
 
-    const pkResponse = await app.getAddressAndPubKey_secp256k1(path);
+    const pkResponse = await app.getAddressAndPubKey_secp256k1(path, mask);
     console.log(pkResponse);
     expect(pkResponse.return_code).toEqual(0x9000);
     expect(pkResponse.error_message).toEqual("No errors");
 
     // do not wait here..
-    const resp = await app.signPtSecp256k1(path, meta, txBlob);
+    const resp = await app.signPtSecp256k1(path, mask, meta, txBlob);
 
     console.log(resp);
 
@@ -282,6 +336,7 @@ describe("Integration", function () {
     const app = new OasisApp(transport);
 
     const path = [44, 474, 0, 0, 0]; // Derivation path. First 3 items are automatically hardened!
+    const mask = [1, 1, 1, 0, 0];
     const context =
       "oasis-core/consensus: tx for chain bc1c715319132305795fa86bd32e93291aaacbfb5b5955f3ba78bdba413af9e1";
     let invalidMessage = Buffer.from(
@@ -291,7 +346,7 @@ describe("Integration", function () {
     );
     invalidMessage += "1";
 
-    const responseSign = await app.sign(path, context, invalidMessage);
+    const responseSign = await app.sign(path, mask, context, invalidMessage);
 
     console.log(responseSign);
     expect(responseSign.return_code).toEqual(0x6984);

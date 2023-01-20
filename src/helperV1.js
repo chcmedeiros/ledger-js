@@ -1,19 +1,32 @@
 import { CLA, errorCodeToString, INS, PAYLOAD_TYPE, processErrorResponse } from "./common";
 
 /** @param {import('./types').DerivationPath} path */
-export function serializePathv1(path) {
+/** @param {import('./types').DerivationPath} mask */
+export function serializePathv1(path, mask) {
   // length 3: ADR 8 derivation path
-  // length 5: Legacy derivation path
-  if (!path || (path.length !== 3 && path.length !== 5)) {
-    throw new Error("Invalid path.");
+  // length 5: Legacy derivation path all hardened mask = [1,1,1,1,1]
+  // length 5: ethereum type derivation path mask = [1,1,1,0,0]
+  if (!path || (path.length !== 3 && mask.length !== 5) || (mask.length !== 3 && mask.length !== 5)) {
+    throw new Error("Invalid path or mask length.");
+  }
+
+  if (path.length != mask.length) {
+    throw new Error("Path and mask lengths don't match.");
   }
 
   /* eslint no-bitwise: "off", no-plusplus: "off" */
   const buf = Buffer.alloc(path.length * 4);
   for (let i = 0; i < path.length; i++) {
-    // Harden all path components by ORing them with 0x80000000.
-    const hardened = (0x80000000 | path[i]) >>> 0;
-    buf.writeUInt32LE(hardened, i * 4);
+    // Harden path components by ORing them with 0x80000000 if mask[i] is 1. 
+    // First 3 items are automatically hardened!
+    if(mask[i] == 1 || i < 3) {
+      const hardened = (0x80000000 | path[i]) >>> 0;
+      buf.writeUInt32LE(hardened, i * 4);
+    } else if (mask[i] == 0){
+      buf.writeUInt32LE(path[i], i*4);
+    } else {
+      throw new Error("Invalid mask value.");
+    }
   }
 
   return buf;
